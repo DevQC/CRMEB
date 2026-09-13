@@ -424,24 +424,33 @@ export default {
   },
   computed: {
     displayInfo() {
-      let price = this.priceData.price || "0.00";
-      let real_price = this.priceData.real_price || "0.00";
-      let ot_price = this.priceData.ot_price || "0.00";
-      let vip_price = this.priceData.vip_price;
-      let stock = this.productData.stock || 0;
-      let fsales = this.productData.fsales || 0;
-      let unit_name = this.productData.unit_name || "";
+      const pd = this.productData || {};
+      let real_price = pd.price != null ? pd.price : "0.00";
+      let ot_price = pd.ot_price != null ? pd.ot_price : "0.00";
+      let vip_price = pd.vip_price != null ? pd.vip_price : 0;
+      let price = real_price;
+      let stock = pd.stock != null ? pd.stock : 0;
+      let fsales = pd.fsales != null ? pd.fsales : 0;
+      let unit_name = pd.unit_name || "";
 
       if (this.skuList.length > 0 && this.selectedIndex < this.skuList.length) {
         let sku = this.skuList[this.selectedIndex];
         if (sku) {
-          if (sku.price) price = sku.price;
-          if (sku.real_price) price = sku.real_price;
-          if (sku.ot_price) ot_price = sku.ot_price;
-          if (sku.vip_price) vip_price = sku.vip_price;
-          if (sku.stock || sku.stock === 0) stock = sku.stock;
+          if (sku.price != null) {
+            real_price = sku.price;
+            price = sku.price;
+          }
+          if (sku.ot_price != null) ot_price = sku.ot_price;
+          if (sku.vip_price != null) vip_price = sku.vip_price;
+          if (sku.stock != null) stock = sku.stock;
         }
       }
+
+      const pp = this.priceData || {};
+      if (pp.real_price) real_price = pp.real_price;
+      if (pp.ot_price) ot_price = pp.ot_price;
+      if (pp.member_price) vip_price = pp.member_price;
+
       return { price, ot_price, vip_price, stock, fsales, unit_name, real_price };
     },
     sliderImage() {

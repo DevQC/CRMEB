@@ -314,3 +314,5 @@ docker-compose一键部署：https://doc.crmeb.com/single_open/open_v54/20145
 ---
 
 
+# 压缩
+tar -zcvf crmeb_backup.tar.gz crmeb template

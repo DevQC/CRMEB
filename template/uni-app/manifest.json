@@ -1,6 +1,6 @@
 {
     "name" : "CRMEB标准版",
-    "appid" : "__UNI__A3F1ED4",
+    "appid" : "__UNI__77F99F6",
     "description" : "CRMEB标准版",
     "versionName" : "6.0.0",
     "versionCode" : 600,
@@ -183,7 +183,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx3b82801238ca1b57",
+        "appid" : "wxca1f035616b13175",
         "setting" : {
             "urlCheck" : false,
             "minified" : true,

@@ -465,6 +465,7 @@ export default {
       return {
         top: this.getHeight.menuButtonInfo.bottom + 8 + "px",
         right: "10px",
+        zIndex: 99999,
       };
     },
     // #endif

@@ -31,8 +31,8 @@
           </view>
         </scroll-view>
       </view>
-      <view class="wrapper">
-        <view class="bgcolor" v-if="iSlong">
+      <view class="wrapper" :style="{ top: categoryErList.length > 1 ? '232rpx' : '128rpx' }">
+        <view class="bgcolor" v-if="iSlong && categoryErList.length > 1">
           <view class="longTab acea-row row-middle" id="category">
             <scroll-view
               scroll-x="true"
@@ -57,7 +57,7 @@
             ><text class="iconfont icon-xiangxia"></text
           ></view>
         </view>
-        <view v-else>
+        <view v-else-if="!iSlong && categoryErList.length > 1">
           <view class="downTab">
             <view class="title acea-row row-between-wrapper">
               <view>{{ categoryTitle }}</view>
@@ -86,7 +86,7 @@
           scroll-with-animation="true"
           :scroll-top="0"
           @scroll="scroll"
-          :style="{ height: scrollHeight + 'px' }"
+          :style="{ height: scrollHeight + 'px', paddingTop: categoryErList.length > 1 ? '0' : '20rpx' }"
           :lower-threshold="50"
           @scrolltolower="productslist"
         >
@@ -178,7 +178,15 @@ let windowHeight = uni.getWindowInfo().windowHeight;
 let sysHeight = uni.getWindowInfo().statusBarHeight;
 let titleBarHeight = uni.getSystemInfo().titleBarHeight;
 export default {
-  computed: mapGetters(["isLogin", "uid"]),
+  computed: {
+    ...mapGetters(["isLogin", "uid"]),
+    scrollHeight() {
+      if (this.categoryErList.length > 1 || !this.baseScrollHeight) {
+        return this.baseScrollHeight;
+      }
+      return this.baseScrollHeight + 50;
+    },
+  },
   components: {
     productWindow,
     goodClass,
@@ -244,7 +252,7 @@ export default {
       cart_num: 0,
       storeInfo: {},
       endLocation: {},
-      scrollHeight: 0,
+      baseScrollHeight: 0,
     };
   },
   onLoad() {},
@@ -290,7 +298,7 @@ export default {
           h += data.height;
         })
         .exec();
-      this.scrollHeight = windowHeight - h - sysHeight;
+      this.baseScrollHeight = windowHeight - h - sysHeight;
     }, 1000);
     // #endif
     // #ifdef MP
@@ -309,7 +317,7 @@ export default {
           CustomBar = HeaderBar + e.statusBarHeight;
         }
         console.log(e, windowHeight, CustomBar, HeaderBar);
-        this.scrollHeight = windowHeight - HeaderBar - CustomBar;
+        this.baseScrollHeight = windowHeight - HeaderBar - CustomBar;
       },
     });
     // #endif
