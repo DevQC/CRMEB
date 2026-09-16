@@ -1759,6 +1759,7 @@ class UserServices extends BaseServices
         }
         if ($userInfo['uid'] == $spreadUid || $userInfo['uid'] == $userSpreadUid) $check = false;
         if ($check) {
+            $oldSpreadUid = (int)$userInfo['spread_uid'];
             $spreadInfo = $this->dao->get($spreadUid, ['division_id', 'agent_id', 'staff_id']);
             $data = [];
             $data['spread_uid'] = $spreadUid;
@@ -1768,6 +1769,12 @@ class UserServices extends BaseServices
             $data['staff_id'] = $spreadInfo['staff_id'];
             if (!$this->dao->update($uid, $data, 'uid')) {
                 throw new ApiException('绑定推广关系失败');
+            }
+            if ($oldSpreadUid != $spreadUid) {
+                if ($oldSpreadUid) {
+                    $this->dao->decField($oldSpreadUid, 'spread_count', 1);
+                }
+                $this->dao->incField($spreadUid, 'spread_count', 1);
             }
             return '绑定上级成功，上级uid为' . $spreadUid;
         } else {

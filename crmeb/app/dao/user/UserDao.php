@@ -81,6 +81,18 @@ class UserDao extends BaseDao
     }
 
     /**
+     * 某个字段累减某个数值
+     * @param int $uid
+     * @param string $field
+     * @param int $num
+     * @return bool
+     */
+    public function decField(int $uid, string $field, int $num = 1)
+    {
+        return $this->getModel()->where('uid', $uid)->dec($field, $num)->update();
+    }
+
+    /**
      * @param $uid
      * @param string $field
      * @return \think\Collection
