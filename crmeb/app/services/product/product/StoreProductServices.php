@@ -14,6 +14,7 @@ namespace app\services\product\product;
 
 use app\dao\product\product\StoreProductDao;
 use app\Request;
+use app\services\agent\AgentLevelServices;
 use app\services\activity\bargain\StoreBargainServices;
 use app\services\activity\combination\StoreCombinationServices;
 use app\services\activity\coupon\StoreCouponUserServices;
@@ -1695,12 +1696,21 @@ class StoreProductServices extends BaseServices
         if (!sys_config('brokerage_func_status')) {
             return 0;
         }
-        $store_brokerage_ratio = sys_config('store_brokerage_ratio');
-        $store_brokerage_ratio = bcdiv((string)$store_brokerage_ratio, '100', 2);
         if (isset($storeInfo['is_sub']) && $storeInfo['is_sub'] == 1) {
             $maxPrice = (int)max(array_column($productValue, 'brokerage'));
             $minPrice = (int)min(array_column($productValue, 'brokerage'));
         } else {
+            $store_brokerage_ratio = sys_config('store_brokerage_ratio');
+            $agentLevelId = (int)$userServices->value(['uid' => $uid], 'agent_level');
+            if ($agentLevelId) {
+                /** @var AgentLevelServices $agentLevelServices */
+                $agentLevelServices = app()->make(AgentLevelServices::class);
+                $agentLevelInfo = $agentLevelServices->getLevelInfo($agentLevelId, 'id,status,one_brokerage_percent');
+                if ($agentLevelInfo && $agentLevelInfo['status'] == 1) {
+                    $store_brokerage_ratio = $agentLevelInfo['one_brokerage_percent'];
+                }
+            }
+            $store_brokerage_ratio = bcdiv((string)$store_brokerage_ratio, '100', 2);
             $maxPrice = max(array_column($productValue, 'price'));
             $minPrice = min(array_column($productValue, 'price'));
             $maxPrice = bcmul((string)$store_brokerage_ratio, (string)$maxPrice, 0);

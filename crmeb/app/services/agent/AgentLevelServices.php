@@ -319,7 +319,7 @@ class AgentLevelServices extends BaseServices
         if (!$userInfo) {
             throw new AdminException('用户不存在');
         }
-        $levelList = $this->dao->getList(['is_del' => 0, 'status' => 1], '*', [], 0, 0, $userInfo['agent_level']);
+        $levelList = $this->dao->getList(['is_del' => 0, 'status' => 1]);
         $setOptionLabel = function () use ($levelList) {
             $menus = [];
             foreach ($levelList as $level) {
